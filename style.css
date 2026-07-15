@@ -83,13 +83,16 @@ html:not(.lang-ready) body{visibility:hidden}
 .team-hero{--hero-image:url('assets/team-hero-v2.png')}
 .page-hero.team-hero,.page-hero.news-hero{background-image:linear-gradient(90deg,rgba(4,27,23,.38) 0%,rgba(4,27,23,.18) 40%,rgba(4,27,23,.03) 72%,transparent 100%),var(--hero-image);background-position:center;background-size:cover}
 
-/* Homepage: bespoke optoelectronic energy-flow hero */
-.home-page .hero:before{z-index:2;background:linear-gradient(90deg,rgba(3,24,20,.72) 0%,rgba(3,24,20,.44) 34%,rgba(3,24,20,.16) 65%,rgba(3,24,20,.05) 100%),linear-gradient(0deg,rgba(3,24,20,.28),transparent 58%);transform:none}
+/* Homepage: perspective 4 x 4 AX6 octahedral lattice */
+.home-page .hero:before{z-index:2;background:linear-gradient(90deg,rgba(2,20,17,.72) 0%,rgba(2,20,17,.42) 34%,rgba(2,20,17,.12) 64%,rgba(2,20,17,.025) 100%),linear-gradient(0deg,rgba(2,20,17,.42),transparent 58%);transform:none}
 .home-page .hero:after{display:none}
 .home-page .hero-content{z-index:4}
 .home-page .hero-content h1,.home-page .hero-copy{text-shadow:0 2px 24px rgba(1,15,13,.55)}
-.energy-hero{position:absolute;inset:0;z-index:0;overflow:hidden;background:#061b17}
-.energy-hero-bg{position:absolute;inset:-2%;background:url('assets/home-energy-flow-v1.png') center/cover no-repeat;transform:scale(1.025);animation:energy-breathe 14s ease-in-out infinite alternate;will-change:transform}
-.energy-animation{position:absolute;inset:0;width:100%;height:100%;z-index:1;mix-blend-mode:screen;pointer-events:none}
-@keyframes energy-breathe{from{transform:scale(1.025) translate3d(0,0,0)}to{transform:scale(1.065) translate3d(-.7%,.25%,0)}}
-@media(prefers-reduced-motion:reduce){.energy-hero-bg{animation:none}}
+.energy-hero{position:absolute;inset:0;z-index:0;overflow:hidden;background:radial-gradient(circle at 72% 45%,#10342c 0,#07251f 34%,#031914 68%,#010e0c 100%)}
+.energy-hero:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 76% 52%,transparent 0 28%,rgba(1,12,10,.2) 66%,rgba(1,12,10,.48) 100%);pointer-events:none}
+.energy-animation{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.home-page .hero{min-height:100svh}
+.home-page h1{max-width:1180px;font-size:clamp(58px,6.1vw,98px)}
+.home-page .hero-copy{max-width:920px;font-size:19px}
+@media(max-width:760px){.home-page .hero:before{background:linear-gradient(90deg,rgba(2,20,17,.78),rgba(2,20,17,.34) 72%,rgba(2,20,17,.12)),linear-gradient(0deg,rgba(2,20,17,.5),transparent 55%)}.energy-hero{background:radial-gradient(circle at 70% 58%,#123d34 0,#07261f 42%,#021411 100%)}}
+@media(max-width:650px){.home-page h1{font-size:50px}.home-page .hero-copy{font-size:17px}}
