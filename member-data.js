@@ -7,6 +7,7 @@ window.memberProfiles = [
     zhRole: '研究员 / 博士生导师',
     enRole: 'Principal Investigator / PhD Supervisor',
     photo: 'assets/xx.jpg',
+    detailPhotoPosition: '50% 0%',
     email: 'xunxiao@pku.edu.cn',
     education: {
       zh: '<strong>教育经历</strong><br>2012–2016 学士，华中科技大学光学与电子信息学院<br>2016–2021 博士，美国北卡罗来纳大学教堂山分校应用物理系<br><br><strong>工作经历</strong><br>2021–2022 博士后，美国北卡罗来纳大学教堂山分校应用物理系<br>2022–2025 博士后，瑞典林雪平大学物理系<br>2025–至今 助理教授、研究员、博士生导师，北京大学材料科学与工程学院',
@@ -27,7 +28,12 @@ window.memberProfiles = [
     zhName: '张广悦',
     enName: 'Guangyue Zhang',
     zhRole: '2024级博士生',
-    enRole: 'PhD Student, Class of 2024'
+    enRole: 'PhD Student, Class of 2024',
+    photo: 'assets/member-guangyue-zhang.jpg',
+    photoPosition: '58% 50%',
+    email: 'guangyuezh@stu.pku.edu.cn',
+    research: { zh: 'X射线间接探测与成像；聚合物网络力学性能的调控', en: 'Indirect X-ray detection and imaging; regulation of the mechanical properties of polymer networks' },
+    contact: { zh: '<a href="mailto:guangyuezh@stu.pku.edu.cn">guangyuezh@stu.pku.edu.cn</a>', en: '<a href="mailto:guangyuezh@stu.pku.edu.cn">guangyuezh@stu.pku.edu.cn</a>' }
   },
   {
     id: 'yaxin-zhang',
@@ -35,7 +41,12 @@ window.memberProfiles = [
     zhName: '张雅昕',
     enName: 'Yaxin Zhang',
     zhRole: '2025级博士生',
-    enRole: 'PhD Student, Class of 2025'
+    enRole: 'PhD Student, Class of 2025',
+    photo: 'assets/member-yaxin-zhang.jpg',
+    photoPosition: '52% 43%',
+    email: '2501112551@stu.pku.edu.cn',
+    research: { zh: '射线探测与防护', en: 'Radiation detection and protection' },
+    contact: { zh: '<a href="mailto:2501112551@stu.pku.edu.cn">2501112551@stu.pku.edu.cn</a>', en: '<a href="mailto:2501112551@stu.pku.edu.cn">2501112551@stu.pku.edu.cn</a>' }
   },
   {
     id: 'haojun-liu',
@@ -43,7 +54,13 @@ window.memberProfiles = [
     zhName: '柳淏君',
     enName: 'Haojun Liu',
     zhRole: '2026级博士生',
-    enRole: 'PhD Student, Class of 2026'
+    enRole: 'PhD Student, Class of 2026',
+    photo: 'assets/member-haojun-liu.jpg',
+    photoPosition: '39% 43%',
+    detailPhotoPosition: '28% 48%',
+    email: '2601112567@stu.pku.edu.cn',
+    research: { zh: 'X射线光子计数探测器', en: 'X-ray photon-counting detectors' },
+    contact: { zh: '<a href="mailto:2601112567@stu.pku.edu.cn">2601112567@stu.pku.edu.cn</a>', en: '<a href="mailto:2601112567@stu.pku.edu.cn">2601112567@stu.pku.edu.cn</a>' }
   },
   {
     id: 'yiran-zhang',
@@ -52,19 +69,26 @@ window.memberProfiles = [
     enName: 'Yiran Zhang',
     zhRole: '2026级博士生',
     enRole: 'PhD Student, Class of 2026',
-    education: { zh: '教育经历待补充。', en: 'Education details to update.' },
-    research: { zh: '研究方向待补充。', en: 'Research interests to update.' },
-    interests: { zh: '兴趣爱好待补充。', en: 'Interests to update.' }
+    photo: 'assets/member-yiran-zhang.jpg',
+    photoPosition: '50% 48%',
+    email: 'zhangyiran26@stu.pku.edu.cn',
+    research: { zh: '钙钛矿光电探测器；钙钛矿射线探测器', en: 'Perovskite photodetectors; perovskite radiation detectors' },
+    contact: { zh: '<a href="mailto:zhangyiran26@stu.pku.edu.cn">zhangyiran26@stu.pku.edu.cn</a>', en: '<a href="mailto:zhangyiran26@stu.pku.edu.cn">zhangyiran26@stu.pku.edu.cn</a>' }
   },
   {
-    id: 'jie-feng',
-    group: 'phd',
-    zhName: '冯杰',
-    enName: 'Jie Feng',
-    zhRole: '2026级博士生',
-    enRole: 'PhD Student, Class of 2026',
-    education: { zh: '教育经历待补充。', en: 'Education details to update.' },
-    research: { zh: '研究方向待补充。', en: 'Research interests to update.' },
-    interests: { zh: '兴趣爱好待补充。', en: 'Interests to update.' }
+    id: 'jianyu-chen',
+    group: 'undergraduate',
+    zhName: '陈建宇',
+    enName: 'Jianyu Chen',
+    zhRole: '2024级本科生',
+    enRole: 'Undergraduate Student, Class of 2024',
+    photo: 'assets/member-jianyu-chen.jpg',
+    photoPosition: '50% 82%',
+    photoTransform: 'scale(1.18)',
+    detailPhotoPosition: '50% 78%',
+    detailPhotoTransform: 'scale(1.12)',
+    email: '2400011122@stu.pku.edu.cn',
+    research: { zh: 'X射线间接探测与成像；聚合物网络力学性能的调控', en: 'Indirect X-ray detection and imaging; regulation of the mechanical properties of polymer networks' },
+    contact: { zh: '<a href="mailto:2400011122@stu.pku.edu.cn">2400011122@stu.pku.edu.cn</a>', en: '<a href="mailto:2400011122@stu.pku.edu.cn">2400011122@stu.pku.edu.cn</a>' }
   }
 ];

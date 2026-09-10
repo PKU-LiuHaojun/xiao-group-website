@@ -5,17 +5,20 @@
   const ctx=canvas.getContext('2d');
   const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TAU=Math.PI*2;
+  const OCTAHEDRON_RADIUS=1;
   let width=0,height=0,dpr=1,frame=0;
+  const animationStart=performance.now();
   const photonEpoch=performance.now();
 
   const palette={
-    edge:'rgba(222,250,241,.72)',
-    face1:'rgba(72,190,164,.62)',
-    face2:'rgba(137,225,204,.46)',
-    face3:'rgba(27,126,111,.7)',
-    back:'rgba(41,138,119,.3)',
-    a:'#f08b5d',
-    x:'#d9f5ef'
+    edge:'rgba(145,103,27,.7)',
+    face1:'rgba(226,184,73,.82)',
+    face2:'rgba(246,220,143,.78)',
+    face3:'rgba(207,153,43,.84)',
+    back:'rgba(232,198,113,.62)',
+    a:'#71859a',
+    b:'#f4a62a',
+    x:'#a6313b'
   };
 
   const clamp=value=>Math.max(0,Math.min(1,value));
@@ -32,15 +35,17 @@
     ctx.setTransform(dpr,0,0,dpr,0,0);
   }
 
-  function layout(){
+  function layout(time){
     const compact=width<760;
+    // Hold a deliberate tilted opening pose, then rotate at a restrained pace.
+    const motion=reduceMotion?0:Math.max(0,time-animationStart-1400)*.60;
     return{
-      unit:Math.min(height/(compact?8.9:7.75),width/(compact?8.25:10.3)),
-      origin:{x:width*(compact?.58:.72),y:height*(compact?.58:.54)},
-      yaw:.48,
-      pitch:-.28,
-      roll:-.055,
-      camera:18
+      unit:Math.min(height/(compact?9.8:9.15),width/(compact?9.6:10.8)),
+      origin:{x:width*(compact?.64:.77),y:height*(compact?.56:.55)},
+      yaw:.34+Math.sin(motion*.0002)*.18,
+      pitch:.29+Math.sin(motion*.00016)*.08,
+      roll:-.035+Math.sin(motion*.00013)*.02,
+      camera:24
     };
   }
 
@@ -66,21 +71,22 @@
     return{x:L.origin.x+x3*L.unit*perspective,y:L.origin.y+y3*L.unit*perspective,depth:z2,perspective};
   }
 
-  function cellWorld(col,row){
-    return{x:(col-1.5)*2,y:(row-1.5)*2,z:0};
+  function cellWorld(col,row,layer){
+    return{x:(col-1)*2,y:(row-1)*2,z:(layer-1)*2};
   }
 
-  function buildCell(col,row,L,options={}){
-    const base=cellWorld(col,row);
+  function buildCell(col,row,layer,L,options={}){
+    const base=cellWorld(col,row,layer);
     const translation=options.translation||{x:0,y:0,z:0};
     const rotationY=options.rotationY||0;
     const rotationZ=options.rotationZ||0;
     const scale=options.scale||1;
     const alpha=options.alpha??1;
+    // Six equal B-X bonds along ±x, ±y and ±z define a regular BX6 octahedron.
     const local=[
-      {x:1,y:0,z:0},{x:-1,y:0,z:0},
-      {x:0,y:1,z:0},{x:0,y:-1,z:0},
-      {x:0,y:0,z:1},{x:0,y:0,z:-1}
+      {x:OCTAHEDRON_RADIUS,y:0,z:0},{x:-OCTAHEDRON_RADIUS,y:0,z:0},
+      {x:0,y:OCTAHEDRON_RADIUS,z:0},{x:0,y:-OCTAHEDRON_RADIUS,z:0},
+      {x:0,y:0,z:OCTAHEDRON_RADIUS},{x:0,y:0,z:-OCTAHEDRON_RADIUS}
     ];
     const world=local.map(point=>{
       const rotated=rotateLocal(point,rotationY,rotationZ);
@@ -104,19 +110,36 @@
       const depth=points.reduce((sum,p)=>sum+p.depth,0)/3;
       const front=indices.includes(5);
       const fill=front?[palette.face2,palette.face1,palette.face3,palette.face1][index%4]:palette.back;
-      commands.push({type:'face',points,depth,fill,edge:palette.edge,alpha:alpha*(front?.9:.48)});
+      commands.push({type:'face',points,depth,fill,edge:palette.edge,alpha:alpha*(front?.96:.76)});
     });
 
     projected.forEach(point=>commands.push({
       type:'sphere',point,depth:point.depth,
-      radius:L.unit*.085*scale*point.perspective,
-      color:palette.x,alpha:alpha*.98
+      radius:L.unit*.062*scale*point.perspective,
+      color:palette.x,endColor:'#711b25',alpha:alpha*.98
     }));
     commands.push({
       type:'sphere',point:center,depth:center.depth-.02,
-      radius:L.unit*.115*scale*center.perspective,
-      color:palette.a,alpha
+      radius:L.unit*.108*scale*center.perspective,
+      color:palette.b,endColor:'#b85d08',alpha
     });
+    return commands;
+  }
+
+  function buildASites(L){
+    const commands=[];
+    for(let layer=0;layer<2;layer++){
+      for(let row=0;row<2;row++){
+        for(let col=0;col<2;col++){
+          const point=project({x:-1+col*2,y:-1+row*2,z:-1+layer*2},L);
+          commands.push({
+            type:'sphere',point,depth:point.depth,
+            radius:L.unit*.155*point.perspective,
+            color:palette.a,endColor:'#40556b',alpha:.98
+          });
+        }
+      }
+    }
     return commands;
   }
 
@@ -135,16 +158,16 @@
   }
 
   function drawSphere(command){
-    const {point,radius,color,alpha}=command;
+    const {point,radius,color,endColor,alpha}=command;
     ctx.save();
     ctx.globalAlpha=alpha;
-    ctx.shadowColor='rgba(0,11,9,.52)';
+    ctx.shadowColor='rgba(105,74,31,.2)';
     ctx.shadowBlur=radius*1.7;
     ctx.shadowOffsetY=radius*.5;
     const gradient=ctx.createRadialGradient(point.x-radius*.34,point.y-radius*.4,radius*.08,point.x,point.y,radius);
     gradient.addColorStop(0,'rgba(255,255,255,.98)');
     gradient.addColorStop(.2,color);
-    gradient.addColorStop(1,'rgba(22,36,31,.98)');
+    gradient.addColorStop(1,endColor||'rgba(75,55,45,.9)');
     ctx.fillStyle=gradient;
     ctx.beginPath();
     ctx.arc(point.x,point.y,radius,0,TAU);
@@ -154,23 +177,26 @@
 
   function drawBackground(){
     const gradient=ctx.createRadialGradient(width*.73,height*.5,0,width*.73,height*.5,width*.64);
-    gradient.addColorStop(0,'rgba(45,124,103,.2)');
-    gradient.addColorStop(.52,'rgba(10,55,46,.09)');
-    gradient.addColorStop(1,'rgba(2,20,17,0)');
+    gradient.addColorStop(0,'rgba(229,184,81,.17)');
+    gradient.addColorStop(.52,'rgba(235,207,142,.095)');
+    gradient.addColorStop(1,'rgba(255,255,255,0)');
     ctx.fillStyle=gradient;
     ctx.fillRect(0,0,width,height);
   }
 
   function drawPhotons(time){
     if(reduceMotion)return;
-    const phase=(time-photonEpoch+6000)%9000;
+    const elapsed=Math.max(0,time-animationStart-1400);
+    if(!elapsed)return;
+    const phase=elapsed%3600;
     const streaks=[
-      {delay:0,rgb:'255,222,120',start:{x:.015,y:-.035},end:{x:.29,y:.32}},
-      {delay:320,rgb:'255,222,120',start:{x:.075,y:-.05},end:{x:.37,y:.39}},
-      {delay:680,rgb:'255,222,120',start:{x:.135,y:-.025},end:{x:.43,y:.31}}
+      {delay:0,rgb:'225,116,28',start:{x:-.04,y:-.08},end:{x:.38,y:.56}},
+      {delay:100,rgb:'238,139,34',start:{x:.015,y:-.1},end:{x:.44,y:.63}},
+      {delay:200,rgb:'214,91,24',start:{x:.075,y:-.07},end:{x:.49,y:.57}},
+      {delay:300,rgb:'244,160,45',start:{x:.13,y:-.1},end:{x:.54,y:.66}}
     ];
     streaks.forEach(streak=>{
-      const t=(phase-streak.delay)/1350;
+      const t=(phase-streak.delay)/3300;
       if(t<=0||t>=1)return;
       const head=smooth(t);
       const tail=Math.max(0,head-.28);
@@ -188,16 +214,27 @@
       gradient.addColorStop(1,`rgba(${streak.rgb},${.96*fade})`);
       ctx.save();
       ctx.strokeStyle=gradient;
-      ctx.lineWidth=2.25;
+      ctx.lineWidth=7;
       ctx.shadowColor=`rgba(${streak.rgb},.98)`;
-      ctx.shadowBlur=18;
+      ctx.shadowBlur=24;
+      ctx.beginPath();
+      ctx.moveTo(from.x,from.y);
+      ctx.lineTo(to.x,to.y);
+      ctx.stroke();
+      ctx.shadowBlur=10;
+      ctx.strokeStyle=`rgba(255,232,164,${.95*fade})`;
+      ctx.lineWidth=2.4;
       ctx.beginPath();
       ctx.moveTo(from.x,from.y);
       ctx.lineTo(to.x,to.y);
       ctx.stroke();
       ctx.fillStyle=`rgba(${streak.rgb},${fade})`;
       ctx.beginPath();
-      ctx.arc(to.x,to.y,3.1,0,TAU);
+      ctx.arc(to.x,to.y,6,0,TAU);
+      ctx.fill();
+      ctx.fillStyle=`rgba(255,244,205,${fade})`;
+      ctx.beginPath();
+      ctx.arc(to.x,to.y,2.5,0,TAU);
       ctx.fill();
       ctx.restore();
     });
@@ -206,46 +243,27 @@
   function draw(time){
     ctx.clearRect(0,0,width,height);
     drawBackground();
-    drawPhotons(time);
-    const L=layout();
-    const cycle=reduceMotion?.72:(time%9200)/9200;
-    const missing={col:2,row:1};
-    const arrival=smooth((cycle-.06)/.4);
-    const reset=1-smooth((cycle-.91)/.07);
+    const L=layout(time);
     const commands=[];
 
-    for(let row=0;row<4;row++){
-      for(let col=0;col<4;col++){
-        if(col===missing.col&&row===missing.row)continue;
-        commands.push(...buildCell(col,row,L));
+    for(let layer=0;layer<3;layer++){
+      for(let row=0;row<3;row++){
+        for(let col=0;col<3;col++){
+          commands.push(...buildCell(col,row,layer,L));
+        }
       }
     }
-
-    const start={x:4.5,y:-3.8,z:-2.8};
-    const control={x:1.8,y:-2.7,z:-1.5};
-    const translation={
-      x:mix(mix(start.x,control.x,arrival),mix(control.x,0,arrival),arrival),
-      y:mix(mix(start.y,control.y,arrival),mix(control.y,0,arrival),arrival),
-      z:mix(mix(start.z,control.z,arrival),mix(control.z,0,arrival),arrival)
-    };
-    commands.push(...buildCell(missing.col,missing.row,L,{
-      translation,
-      rotationY:(1-arrival)*.38,
-      rotationZ:(1-arrival)*-.2,
-      scale:.86+.14*arrival,
-      alpha:(.32+.68*arrival)*reset
-    }));
+    commands.push(...buildASites(L));
 
     commands.sort((a,b)=>b.depth-a.depth);
     commands.forEach(command=>command.type==='face'?drawFace(command):drawSphere(command));
 
     const veil=ctx.createLinearGradient(0,0,width,0);
-    veil.addColorStop(0,'rgba(2,18,15,.56)');
-    veil.addColorStop(.31,'rgba(2,18,15,.2)');
-    veil.addColorStop(.61,'rgba(2,18,15,0)');
+    veil.addColorStop(0,'rgba(255,255,255,.78)');
+    veil.addColorStop(.31,'rgba(248,253,252,.32)');
+    veil.addColorStop(.61,'rgba(255,255,255,0)');
     ctx.fillStyle=veil;
     ctx.fillRect(0,0,width,height);
-
     if(!reduceMotion)frame=requestAnimationFrame(draw);
   }
 
