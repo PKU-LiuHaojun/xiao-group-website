@@ -6,18 +6,22 @@
   const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TAU=Math.PI*2;
   const OCTAHEDRON_RADIUS=1;
+  // CsPbBr3-inspired A:B ionic-radius ratio (Cs+: 1.88 Å; Pb2+: 1.19 Å).
+  // Display spheres are scaled for legibility, not a space-filling model.
+  const B_SITE_RADIUS=.16;
+  const A_SITE_RADIUS=B_SITE_RADIUS*(1.88/1.19);
   let width=0,height=0,dpr=1,frame=0;
   const animationStart=performance.now();
   const photonEpoch=performance.now();
 
   const palette={
-    edge:'rgba(145,103,27,.7)',
-    face1:'rgba(226,184,73,.82)',
-    face2:'rgba(246,220,143,.78)',
-    face3:'rgba(207,153,43,.84)',
-    back:'rgba(232,198,113,.62)',
+    edge:'rgba(108,115,122,.85)',
+    face1:'rgba(179,185,191,.95)',
+    face2:'rgba(222,226,230,.93)',
+    face3:'rgba(151,159,167,.96)',
+    back:'rgba(198,204,209,.82)',
     a:'#71859a',
-    b:'#f4a62a',
+    b:'#a5adb5',
     x:'#a6313b'
   };
 
@@ -37,14 +41,13 @@
 
   function layout(time){
     const compact=width<760;
-    // Hold a deliberate tilted opening pose, then rotate at a restrained pace.
-    const motion=reduceMotion?0:Math.max(0,time-animationStart-1400)*.60;
+    // Fixed lattice pose; only incident light and photoexcited electrons move.
     return{
       unit:Math.min(height/(compact?9.8:9.15),width/(compact?9.6:10.8)),
-      origin:{x:width*(compact?.64:.77),y:height*(compact?.56:.55)},
-      yaw:.34+Math.sin(motion*.0002)*.18,
-      pitch:.29+Math.sin(motion*.00016)*.08,
-      roll:-.035+Math.sin(motion*.00013)*.02,
+      origin:{x:width*(compact?.61:.70),y:height*(compact?.50:.53)},
+      yaw:.34,
+      pitch:.29,
+      roll:-.035,
       camera:24
     };
   }
@@ -120,8 +123,8 @@
     }));
     commands.push({
       type:'sphere',point:center,depth:center.depth-.02,
-      radius:L.unit*.108*scale*center.perspective,
-      color:palette.b,endColor:'#b85d08',alpha
+      radius:L.unit*B_SITE_RADIUS*scale*center.perspective,
+      color:palette.b,endColor:'#626c76',alpha
     });
     return commands;
   }
@@ -134,7 +137,7 @@
           const point=project({x:-1+col*2,y:-1+row*2,z:-1+layer*2},L);
           commands.push({
             type:'sphere',point,depth:point.depth,
-            radius:L.unit*.155*point.perspective,
+            radius:L.unit*A_SITE_RADIUS*point.perspective,
             color:palette.a,endColor:'#40556b',alpha:.98
           });
         }
@@ -161,7 +164,7 @@
     const {point,radius,color,endColor,alpha}=command;
     ctx.save();
     ctx.globalAlpha=alpha;
-    ctx.shadowColor='rgba(105,74,31,.2)';
+    ctx.shadowColor='rgba(63,71,80,.2)';
     ctx.shadowBlur=radius*1.7;
     ctx.shadowOffsetY=radius*.5;
     const gradient=ctx.createRadialGradient(point.x-radius*.34,point.y-radius*.4,radius*.08,point.x,point.y,radius);
@@ -175,74 +178,62 @@
     ctx.restore();
   }
 
-  function drawBackground(){
-    const gradient=ctx.createRadialGradient(width*.73,height*.5,0,width*.73,height*.5,width*.64);
-    gradient.addColorStop(0,'rgba(229,184,81,.17)');
-    gradient.addColorStop(.52,'rgba(235,207,142,.095)');
-    gradient.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle=gradient;
-    ctx.fillRect(0,0,width,height);
-  }
-
-  function drawPhotons(time){
+  function drawPhotoexcitation(time,L){
     if(reduceMotion)return;
-    const elapsed=Math.max(0,time-animationStart-1400);
-    if(!elapsed)return;
-    const phase=elapsed%3600;
-    const streaks=[
-      {delay:0,rgb:'225,116,28',start:{x:-.04,y:-.08},end:{x:.38,y:.56}},
-      {delay:100,rgb:'238,139,34',start:{x:.015,y:-.1},end:{x:.44,y:.63}},
-      {delay:200,rgb:'214,91,24',start:{x:.075,y:-.07},end:{x:.49,y:.57}},
-      {delay:300,rgb:'244,160,45',start:{x:.13,y:-.1},end:{x:.54,y:.66}}
-    ];
-    streaks.forEach(streak=>{
-      const t=(phase-streak.delay)/3300;
-      if(t<=0||t>=1)return;
-      const head=smooth(t);
-      const tail=Math.max(0,head-.28);
-      const from={
-        x:mix(streak.start.x,streak.end.x,tail)*width,
-        y:mix(streak.start.y,streak.end.y,tail)*height
-      };
-      const to={
-        x:mix(streak.start.x,streak.end.x,head)*width,
-        y:mix(streak.start.y,streak.end.y,head)*height
-      };
-      const fade=Math.sin(Math.PI*t);
-      const gradient=ctx.createLinearGradient(from.x,from.y,to.x,to.y);
-      gradient.addColorStop(0,`rgba(${streak.rgb},0)`);
-      gradient.addColorStop(1,`rgba(${streak.rgb},${.96*fade})`);
+    const phase=((time-animationStart)%6200)/1000;
+    const sharedFade=1-smooth((phase-4.4)/1.6);
+    const hit=project({x:-1.5,y:-1.2,z:-2.7},L);
+    const start={x:-width*.22,y:Math.max(80,hit.y-height*.38)};
+    if(phase<6){
+      // One continuous spectral fill avoids seams between separate color strips.
+      const dx=hit.x-start.x,dy=hit.y-start.y,length=Math.hypot(dx,dy)||1;
+      const nx=-dy/length,ny=dx/length;
+      const tailWidth=width<760?7:12,wide=width<760?65:110;
+      const progress=smooth(phase/1.5);
+      const head={x:mix(start.x,hit.x,progress),y:mix(start.y,hit.y,progress)};
+      const headWidth=mix(tailWidth,wide,progress);
       ctx.save();
-      ctx.strokeStyle=gradient;
-      ctx.lineWidth=7;
-      ctx.shadowColor=`rgba(${streak.rgb},.98)`;
-      ctx.shadowBlur=24;
-      ctx.beginPath();
-      ctx.moveTo(from.x,from.y);
-      ctx.lineTo(to.x,to.y);
-      ctx.stroke();
-      ctx.shadowBlur=10;
-      ctx.strokeStyle=`rgba(255,232,164,${.95*fade})`;
-      ctx.lineWidth=2.4;
-      ctx.beginPath();
-      ctx.moveTo(from.x,from.y);
-      ctx.lineTo(to.x,to.y);
-      ctx.stroke();
-      ctx.fillStyle=`rgba(${streak.rgb},${fade})`;
-      ctx.beginPath();
-      ctx.arc(to.x,to.y,6,0,TAU);
-      ctx.fill();
-      ctx.fillStyle=`rgba(255,244,205,${fade})`;
-      ctx.beginPath();
-      ctx.arc(to.x,to.y,2.5,0,TAU);
-      ctx.fill();
+      ctx.globalAlpha=sharedFade;
+      ctx.filter=`blur(${width<760?10:16}px)`;
+      const glow=ctx.createLinearGradient(hit.x-nx*wide,hit.y-ny*wide,hit.x+nx*wide,hit.y+ny*wide);
+      glow.addColorStop(0,'rgba(234,167,181,0)');
+      glow.addColorStop(.15,'rgba(242,189,170,.25)');
+      glow.addColorStop(.35,'rgba(249,229,179,.36)');
+      glow.addColorStop(.52,'rgba(214,230,198,.38)');
+      glow.addColorStop(.7,'rgba(182,213,233,.33)');
+      glow.addColorStop(.85,'rgba(202,190,228,.23)');
+      glow.addColorStop(1,'rgba(216,185,223,0)');
+      ctx.fillStyle=glow;ctx.beginPath();
+      ctx.moveTo(start.x-nx*tailWidth,start.y-ny*tailWidth);
+      ctx.lineTo(head.x-nx*headWidth,head.y-ny*headWidth);
+      ctx.lineTo(head.x+nx*headWidth,head.y+ny*headWidth);
+      ctx.lineTo(start.x+nx*tailWidth,start.y+ny*tailWidth);
+      ctx.closePath();ctx.fill();
       ctx.restore();
-    });
+    }
+    // Schematic photoexcited carriers; upward drift is a visual illustration.
+    for(let i=0;i<2;i++){
+      const age=phase-2.0-i*.22;
+      if(age<=0||phase>=6)continue;
+      const p=age/4,fade=smooth(age/.18)*sharedFade;
+      const x=hit.x+(i===0?-.55:1.15)*L.unit+Math.sin(p*2+i)*L.unit*.08;
+      const y=hit.y+(i===0?-.15:.48)*L.unit-p*Math.min(height*.38,L.unit*4.8);
+      const r=width<760?6:8;
+      ctx.save();ctx.globalAlpha=fade;
+      const halo=ctx.createRadialGradient(x,y,r*.4,x,y,r*3);
+      halo.addColorStop(0,'rgba(109,172,213,.3)');halo.addColorStop(1,'rgba(109,172,213,0)');
+      ctx.fillStyle=halo;ctx.beginPath();ctx.arc(x,y,r*3,0,TAU);ctx.fill();
+      const sphere=ctx.createRadialGradient(x-r*.3,y-r*.35,0,x,y,r);
+      sphere.addColorStop(0,'#edf8ff');sphere.addColorStop(.35,'#88bddf');sphere.addColorStop(1,'#3c789f');
+      ctx.fillStyle=sphere;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=1.5;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(x-r*.45,y);ctx.lineTo(x+r*.45,y);ctx.stroke();ctx.restore();
+    }
   }
 
   function draw(time){
     ctx.clearRect(0,0,width,height);
-    drawBackground();
+
     const L=layout(time);
     const commands=[];
 
@@ -258,12 +249,8 @@
     commands.sort((a,b)=>b.depth-a.depth);
     commands.forEach(command=>command.type==='face'?drawFace(command):drawSphere(command));
 
-    const veil=ctx.createLinearGradient(0,0,width,0);
-    veil.addColorStop(0,'rgba(255,255,255,.78)');
-    veil.addColorStop(.31,'rgba(248,253,252,.32)');
-    veil.addColorStop(.61,'rgba(255,255,255,0)');
-    ctx.fillStyle=veil;
-    ctx.fillRect(0,0,width,height);
+
+    drawPhotoexcitation(time,L);
     if(!reduceMotion)frame=requestAnimationFrame(draw);
   }
 

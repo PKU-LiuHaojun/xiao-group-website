@@ -165,7 +165,10 @@ nav a{color:#435b55}.mark{border-color:rgba(51,72,67,.38);background:rgba(255,25
 @media(max-width:900px){.recruit-brief .recruit-layout,.join-details .details-layout{grid-template-columns:1fr;gap:48px}.values-art{min-height:0}.values-wheel{width:min(390px,88vw)}.campus-map{width:100%;max-width:680px}.campus-map img{height:380px}}
 @media(max-width:520px){.recruit-brief .position-list article{grid-template-columns:64px 1fr;gap:16px}.values-wheel{width:310px}.values-wheel span{width:152px;height:152px;font-size:15px}.values-wheel span:nth-child(1){left:79px}.values-wheel span:nth-child(2){top:79px}.values-wheel span:nth-child(3){left:79px}.values-wheel span:nth-child(4){top:79px}.campus-map img{height:280px}.campus-map figcaption{font-size:15px}}
 .values-wheel span:nth-child(1){z-index:5}.values-wheel span:nth-child(2){z-index:4}.values-wheel span:nth-child(3){z-index:3}.values-wheel span:nth-child(4){z-index:2}
-.campus-map{background:transparent;border:0}.campus-map figcaption{padding:14px 0 0;background:transparent;border:0}
+.campus-map{background:transparent;border:0}.campus-map figcaption{padding:14px 0 0;background:transparent;border:0;text-align:center}
+.join-details .details-layout{grid-template-columns:repeat(2,minmax(0,1fr))}
+.join-details .campus-map img{object-fit:contain}
+@media(max-width:900px){.join-details .details-layout{grid-template-columns:1fr}.join-details .campus-map{margin-inline:auto}}
 .values-wheel span:nth-child(1),.values-wheel span:nth-child(2),.values-wheel span:nth-child(3),.values-wheel span:nth-child(4){z-index:auto}.values-wheel span:nth-child(1):after{content:"";position:absolute;inset:-1px;border-radius:50%;pointer-events:none;z-index:10;background:linear-gradient(145deg,rgba(220,242,235,.98),rgba(169,214,201,.9));border:1px solid rgba(255,255,255,.72);clip-path:polygon(0 38%,62% 38%,62% 100%,0 100%)}
 .values-wheel span:nth-child(1):after{content:none}.values-wheel i{display:block;position:absolute;z-index:10;left:100px;top:0;width:190px;height:190px;border-radius:50%;pointer-events:none;background:linear-gradient(145deg,rgba(220,242,235,.98),rgba(169,214,201,.9));clip-path:polygon(0 52%,48% 52%,48% 100%,0 100%)}
 @media(max-width:520px){.values-wheel i{left:79px;width:152px;height:152px}}
@@ -370,7 +373,7 @@ header,.inner-header{border-bottom:0}
 /* Gallery cards match publication-card framing */
 .gallery-grid{align-items:stretch}
 .gallery-card{display:flex;flex-direction:column;height:100%;border:2px solid #e0c9cd;border-radius:18px;overflow:hidden;transition:transform .28s,box-shadow .28s,border-color .28s}
-.gallery-copy{flex:1;padding:20px 22px;border-bottom:0}
+.gallery-copy{flex:1;grid-template-columns:1fr;gap:10px;align-content:start;justify-items:center;text-align:center;padding:20px 22px;border-bottom:0}
 .gallery-card:hover{transform:translateY(-6px);border-color:#d3a3aa;box-shadow:0 18px 42px rgba(111,0,8,.1)}
 .gallery-card:hover .gallery-photo{transform:none}
 @media(max-width:650px){.gallery-copy{padding:18px 20px}}
@@ -555,4 +558,46 @@ body>header.inner-header+main.profile-page{padding-top:132px}
 .home-page .featured .section-head h2,
 .home-page .news-home-head h2{max-width:none;margin:0;font:600 clamp(28px,2.7vw,38px)/1.2 var(--sans);letter-spacing:-.02em;text-align:left}
 .home-page .featured,.home-page .join{background:#f8f9f9}
+.home-page #joinHeading{font-family:"Microsoft YaHei","微软雅黑",sans-serif;font-weight:400;font-size:clamp(32px,3.8vw,54px);line-height:1.25}
+/* Crop the original travel portrait in its frame, preserving the source photo. */
+.xiao-portrait-frame{display:block;overflow:hidden;width:100%;aspect-ratio:3/4;flex-shrink:0}
+.pi-card .xiao-portrait-frame{width:270px}
+.pi-card .pi-photo-link .xiao-portrait-frame img,
+#profile .profile-lead .xiao-portrait-frame img{display:block;width:100%;height:100%;min-height:0;object-fit:cover!important;object-position:center!important;transform:none!important;transform-origin:center;padding:0}
+#profile:not(.student-profile) .profile-lead>div:first-child:has(.xiao-portrait-frame){height:auto;align-self:start}
+@media(max-width:850px){#profile .xiao-portrait-frame{max-width:360px;margin:auto}}
+@media(max-width:600px){.pi-card .xiao-portrait-frame{width:230px}}
 @media(max-width:650px){.home-page .research-home-head,.home-page .featured .section-head,.home-page .news-home-head{margin-bottom:24px;padding-bottom:13px}.home-page .research-home-head h2,.home-page .featured .section-head h2,.home-page .news-home-head h2{font-size:27px}}
+
+/* Uniform white homepage opening. */
+.home-page .hero,.home-page .energy-hero{background:#fff}
+.home-page .energy-hero:after{display:none}
+.home-page .hero>header{background:#fff}
+.home-page .hero>header.past-hero{background:#fff}
+
+
+.home-page .hero-content h1.hero-welcome{max-width:58%;font-size:clamp(40px,4.5vw,70px);line-height:1.18;letter-spacing:-.025em;text-shadow:none}
+@media(max-width:650px){.home-page .hero-content h1.hero-welcome{max-width:72%;font-size:clamp(30px,7vw,42px)}}
+
+html[data-lang='en'] .recruitment-article[data-en]{display:block}
+html[data-lang='en'] .recruitment-article>header h1{white-space:normal;font-size:clamp(25px,2.7vw,34px);line-height:1.4}
+html[data-lang='en'] .recruitment-article p{text-align:left}
+
+/* Lower-left greeting with a fixed, photoexcited lattice. */
+.home-page .hero-content{align-items:flex-end;padding-top:0;padding-bottom:205px;pointer-events:none}
+.home-page .hero-content h1.hero-welcome{max-width:65%;font-size:clamp(58px,6.8vw,106px);font-weight:700;line-height:1.06;letter-spacing:-.035em;color:#283b36;margin:0}
+@media(max-width:650px){.home-page .hero-content{padding-bottom:132px}.home-page .hero-content h1.hero-welcome{max-width:100%;font-size:clamp(42px,9.7vw,64px)}}
+html[data-lang="en"] .home-page .news-list{height:auto;overflow:hidden}
+html[data-lang="en"] .home-page .news-track{will-change:transform}
+html[data-lang="en"] .home-page .news-item{height:auto;min-height:102px;align-items:start}
+html[data-lang="en"] .home-page .news-item>div{min-width:0}
+html[data-lang="en"] .home-page .news-item h3{display:block;-webkit-line-clamp:unset;overflow:visible;overflow-wrap:break-word;line-height:1.5}
+@media(max-width:650px){html[data-lang="en"] .home-page .news-item{grid-template-columns:1fr;gap:8px;min-height:0;padding:18px 0}}
+
+.join-details .campus-map figcaption{font-weight:700}
+
+/* Shared transparent group wordmark. */
+.brand{flex-shrink:0;gap:0}.brand .brand-logo{width:auto;height:104px;display:block;object-fit:contain}
+@media(max-width:1150px){.brand .brand-logo{width:auto;height:98px}}
+@media(max-width:760px){.brand .brand-logo{width:auto;height:82px}}
+@media(max-width:380px){.brand .brand-logo{width:auto;height:76px}}

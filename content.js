@@ -1,6 +1,7 @@
 /* 网站的中英文文字、首页动态和图片路径集中维护在这里。 */
 const verifiedNews = [
-  {date:'2026.09.03',zh:'祝贺柳淏君作为博士研究生代表在北京大学材料科学与工程学院2026级开学典礼上发言！',en:'Congratulations to Haojun Liu on speaking as a doctoral student representative at the 2026 Opening Ceremony of the School of Materials Science and Engineering, Peking University!'},
+  {"date": "2026.09.19", "zh": "祝贺张广悦在国际柔性电子与先进材料研讨会（S12）上作学术报告，报告题为“Tough and crack-resistant elastomers via balancing interchain interactions and entanglements”！", "en": "Congratulations to Guangyue Zhang on presenting “Tough and crack-resistant elastomers via balancing interchain interactions and entanglements” at the International Symposium on Flexible Electronics & Advanced Materials (S12)!"},
+  {date:'2026.09.03',zh:'祝贺柳淏君作为博士新生代表在北京大学材料科学与工程学院2026级开学典礼上发言！',en:'Congratulations to Haojun Liu on speaking as a representative of incoming doctoral students at the 2026 Opening Ceremony of the School of Materials Science and Engineering, Peking University!'},
   {date:'2026.09.01',zh:'欢迎张怡然、柳淏君两位同学加入课题组！',en:'Welcome Yiran Zhang and Haojun Liu to the group!'},
   {date:'2026.08.14',zh:'祝贺张广悦在国际知名期刊 Journal of Materials Chemistry A 上发表文章！',en:'Congratulations to Guangyue Zhang on publishing an article in the internationally renowned Journal of Materials Chemistry A!'},
   {date:'2026.07.01',zh:'祝贺柳淏君本科毕业论文获评2026年北京大学工学院优秀本科毕业论文，肖勋老师为优秀论文指导教师。',en:'Congratulations to Haojun Liu: his undergraduate thesis was recognized as an Outstanding Undergraduate Thesis of the College of Engineering, Peking University, with Prof. Xun Xiao honored as the thesis supervisor.'},
@@ -17,11 +18,22 @@ window.siteContent = {
     researchHeading:'研究方向',
     researchMore:'查看更多 +',
     research:[
-      {title:'光电探测器',text:'围绕钙钛矿及相关半导体材料，研究缺陷调控、界面物理与载流子输运，发展兼具高灵敏度、低噪声、快速响应和光谱选择性的光电探测器。',image:'assets/paper46-tunable-photodetectors.png'},
-      {title:'射线探测器',text:'面向低剂量 X 射线探测与成像，通过材料、器件结构和读出方式的协同优化，提升探测灵敏度、信噪比、空间分辨率与长期稳定性。',image:'assets/research-xray-imaging.jpg'},
-      {title:'智能光电器件',text:'集成微型光源、光电探测器、柔性器件、无线电子学与信号处理，构建面向健康监测、环境感知和智能交互的一体化光电器件。',image:'assets/research-wireless-probe-fig1.png'},
-      {title:'功能高分子材料',text:'围绕高韧弹性体与功能离子凝胶，研究高分子网络设计和力学性能调控，并拓展其在光电器件封装防护与环境安全中的应用。',image:'assets/research-polymer-elastomer-fig3.png'}
-    ],
+  {
+    "title": "高性能光电探测器与射线探测器",
+    "text": "以钙钛矿及相关半导体材料为基础，研究缺陷与界面对电荷产生、输运和收集的影响，通过材料制备与器件设计，提高光电探测器和射线探测器的灵敏度、响应速度与工作稳定性。",
+    "image": "assets/research-xray-imaging.jpg"
+  },
+  {
+    "title": "智能光电器件与集成传感系统",
+    "text": "将光电探测器与光源、信号读出电路和无线通信模块集成，研究器件小型化、柔性设计及多参数检测，构建用于医学检测、环境监测和人机交互的智能光电传感系统。",
+    "image": "assets/research-wireless-probe-fig1.png"
+  },
+  {
+    "title": "功能高分子与凝胶材料",
+    "text": "围绕高分子与凝胶材料，研究分子链间相互作用和交联网络对强度、韧性及拉伸性能的影响，通过分子设计赋予材料自修复、黏附或吸附等功能，探索其在柔性器件与封装防护中的应用。",
+    "image": "assets/research-glassy-gel-mechanism.png"
+  }
+],
     publicationHeading:'精选成果',
     papers:[
       {citation:'<a href="https://www.nature.com/articles/s41586-024-08408-7" target="_blank" rel="noopener"><em>Nature</em></a> <strong>638</strong>, 670-675 (2025)',image:'assets/featured-aqueous-recycling.png',url:'https://www.nature.com/articles/s41586-024-08408-7'},
@@ -46,11 +58,22 @@ window.siteContent = {
     researchHeading:'Research',
     researchMore:'More +',
     research:[
-      {title:'Photodetectors',text:'We investigate defect control, interface physics and charge transport in perovskites and related semiconductors to develop photodetectors with high sensitivity, low noise, fast response and tunable spectral selectivity.',image:'assets/paper46-tunable-photodetectors.png'},
-      {title:'Radiation Detectors',text:'Materials, device architectures and readout strategies are jointly optimized for low-dose X-ray detection and imaging with high sensitivity, signal-to-noise ratio, spatial resolution and operational stability.',image:'assets/research-xray-imaging.jpg'},
-      {title:'Smart Optoelectronic Devices',text:'Microscale light sources, photodetectors, flexible devices, wireless electronics and signal processing are integrated for health monitoring, environmental sensing and intelligent interaction.',image:'assets/research-wireless-probe-fig1.png'},
-      {title:'Functional Polymer Materials',text:'We study polymer-network design and mechanical regulation in tough elastomers and functional ionogels, extending these materials to optoelectronic encapsulation, protection and environmental safety.',image:'assets/research-polymer-elastomer-fig3.png'}
-    ],
+  {
+    "title": "High-Performance Photodetectors & Radiation Detectors",
+    "text": "Using perovskites and related semiconductors, we investigate how defects and interfaces affect charge generation, transport and collection. Materials processing and device design are used to improve the sensitivity, response speed and operational stability of photodetectors and radiation detectors.",
+    "image": "assets/research-xray-imaging.jpg"
+  },
+  {
+    "title": "Smart Optoelectronic Devices & Integrated Sensing Systems",
+    "text": "We integrate photodetectors with light sources, readout circuits and wireless communication modules, exploring miniaturization, flexible designs and multiparameter detection to develop smart optoelectronic sensing systems for medical testing, environmental monitoring and human–machine interaction.",
+    "image": "assets/research-wireless-probe-fig1.png"
+  },
+  {
+    "title": "Functional Polymers & Gel Materials",
+    "text": "We investigate how interchain interactions and crosslinked networks affect the strength, toughness and tensile properties of polymers and gels. Molecular design introduces functions such as self-healing, adhesion or adsorption for use in flexible devices and protective encapsulation.",
+    "image": "assets/research-glassy-gel-mechanism.png"
+  }
+],
     publicationHeading:'Featured discoveries',
     papers:[
       {citation:'<a href="https://www.nature.com/articles/s41586-024-08408-7" target="_blank" rel="noopener"><em>Nature</em></a> <strong>638</strong>, 670-675 (2025)',image:'assets/featured-aqueous-recycling.png',url:'https://www.nature.com/articles/s41586-024-08408-7'},

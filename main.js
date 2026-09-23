@@ -1,10 +1,13 @@
 const $ = id => document.getElementById(id);
 const fields = ["heroTitle","researchHeading","researchMore","publicationHeading","newsHeading","newsMore","recruitFeatureTitle","joinHeading","joinLink","footerTagline","contactHeading","address"];
 let newsTickerTimer;
+let newsTickerCleanup;
 
 function initNewsTicker() {
   clearInterval(newsTickerTimer);
+  newsTickerCleanup?.();
   const list = $("newsList");
+  list?.style.removeProperty('height');
   const track = list?.querySelector(".news-track");
   const items = track ? [...track.children] : [];
   if (!track || items.length <= 3 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -14,23 +17,37 @@ function initNewsTicker() {
     track.appendChild(clone);
   });
   let index = 0;
+  const english = document.documentElement.dataset.lang === 'en';
+  const events = new AbortController();
+  const allItems = [...track.children];
+  const position = () => {
+    const heights = allItems.map(item => item.getBoundingClientRect().height);
+    const offset = heights.slice(0,index).reduce((a,b)=>a+b,0);
+    track.style.transform = `translateY(-${offset}px)`;
+    if (english) list.style.height = `${heights.slice(index,index+3).reduce((a,b)=>a+b,0)}px`;
+  };
   const advance = () => {
     index += 1;
     track.style.transition = "transform .65s cubic-bezier(.22,.7,.25,1)";
-    track.style.transform = `translateY(-${index * items[0].offsetHeight}px)`;
+    position();
   };
-  const start = () => { clearInterval(newsTickerTimer); newsTickerTimer = setInterval(advance,3000); };
-  track.addEventListener("transitionend",() => {
+  const start = () => { clearInterval(newsTickerTimer); newsTickerTimer = setInterval(advance,english?6000:3000); };
+  track.addEventListener("transitionend",(event) => {
+    if(event.propertyName !== 'transform') return;
     if (index < items.length) return;
     track.style.transition = "none";
     index = 0;
-    track.style.transform = "translateY(0)";
-  });
-  list.addEventListener("mouseenter",() => clearInterval(newsTickerTimer));
-  list.addEventListener("mouseleave",start);
-  list.addEventListener("focusin",() => clearInterval(newsTickerTimer));
-  list.addEventListener("focusout",start);
-  document.addEventListener("visibilitychange",() => document.hidden ? clearInterval(newsTickerTimer) : start(),{once:true});
+    position();
+  },{signal:events.signal});
+  list.addEventListener("mouseenter",() => clearInterval(newsTickerTimer),{signal:events.signal});
+  list.addEventListener("mouseleave",start,{signal:events.signal});
+  list.addEventListener("focusin",() => clearInterval(newsTickerTimer),{signal:events.signal});
+  list.addEventListener("focusout",start,{signal:events.signal});
+  document.addEventListener("visibilitychange",() => document.hidden ? clearInterval(newsTickerTimer) : start(),{signal:events.signal});
+  const observer = new ResizeObserver(position);
+  allItems.forEach(item=>observer.observe(item));
+  newsTickerCleanup = () => {events.abort();observer.disconnect();};
+  position();
   start();
 }
 
@@ -129,3 +146,12 @@ function render(lang) {
 }
 document.querySelectorAll("[data-language]").forEach(button => button.addEventListener("click",() => render(button.dataset.language)));
 render(initialSiteLanguage());
+
+const homeHero = document.querySelector('.home-page .hero');
+const homeHeader = homeHero?.querySelector('header');
+if (homeHeader) {
+  const updateHomeHeader = () => homeHeader.classList.toggle('past-hero', homeHero.getBoundingClientRect().bottom <= homeHeader.offsetHeight);
+  addEventListener('scroll', updateHomeHeader, { passive: true });
+  addEventListener('resize', updateHomeHeader, { passive: true });
+  updateHomeHeader();
+}

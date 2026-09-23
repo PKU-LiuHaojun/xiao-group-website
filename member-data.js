@@ -6,7 +6,7 @@ window.memberProfiles = [
     enName: 'Xun Xiao',
     zhRole: '研究员 / 博士生导师',
     enRole: 'Principal Investigator / PhD Supervisor',
-    photo: 'assets/xx.jpg',
+    photo: 'assets/member-xun-xiao-upscaled.png',
     detailPhotoPosition: '50% 0%',
     email: 'xunxiao@pku.edu.cn',
     education: {
@@ -69,7 +69,7 @@ window.memberProfiles = [
     enName: 'Yiran Zhang',
     zhRole: '2026级博士生',
     enRole: 'PhD Student, Class of 2026',
-    photo: 'assets/member-yiran-zhang.jpg',
+    photo: 'assets/member-yiran-zhang-v2.jpg',
     photoPosition: '50% 48%',
     email: 'zhangyiran26@stu.pku.edu.cn',
     research: { zh: '钙钛矿光电探测器；钙钛矿射线探测器', en: 'Perovskite photodetectors; perovskite radiation detectors' },

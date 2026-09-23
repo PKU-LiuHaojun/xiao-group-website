@@ -38,7 +38,7 @@ function renderProfile(lang){
     : `<article class="student-info-row"><span>0${i+1}</span><div><strong>${lang==='zh'?s[1]:s[0]}${lang==='zh'?'：':': '}</strong>${s[2][lang]}</div></article>`
   ).join('');
   const profileGroupLabel=m.group==='pi'?'Principal Investigator':m.group==='phd'?'Graduate Students':'Undergraduate Students';
-  box.innerHTML=`<div class="profile-lead"><div>${portrait}</div><div><p class="kicker">${profileGroupLabel}</p><h1>${lang==='zh'?m.zhName:m.enName}</h1><p class="profile-en">${lang==='zh'?m.enName:m.zhName}</p><p class="profile-role">${lang==='zh'?m.zhRole:m.enRole}</p></div></div><div class="profile-sections">${sectionMarkup}</div>`;
+  box.innerHTML=`<div class="profile-lead"><div>${m.id === 'xun-xiao' ? `<span class="xiao-portrait-frame">${portrait}</span>` : portrait}</div><div><p class="kicker">${profileGroupLabel}</p><h1>${lang==='zh'?m.zhName:m.enName}</h1><p class="profile-en">${lang==='zh'?m.enName:m.zhName}</p><p class="profile-role">${lang==='zh'?m.zhRole:m.enRole}</p>${m.id==='xun-xiao'?`<a class="pi-scholar" href="https://scholar.google.com/citations?user=PQaQF90AAAAJ&amp;hl=${lang==='zh'?'zh-CN':'en'}" target="_blank" rel="noopener noreferrer">Google Scholar <span aria-hidden="true">↗</span></a>`:''}</div></div><div class="profile-sections">${sectionMarkup}</div>`;
   const nameHeading=box.querySelector('h1');
   if(nameHeading){nameHeading.className='profile-name';nameHeading.innerHTML=`<span>${m.zhName}</span><small>${m.enName}</small>`;}
   const oldSecondaryName=box.querySelector('.profile-en');if(oldSecondaryName)oldSecondaryName.remove();
